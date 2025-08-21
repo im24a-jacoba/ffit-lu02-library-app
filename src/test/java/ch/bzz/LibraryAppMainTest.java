@@ -48,6 +48,22 @@ class LibraryAppMainTest {
         assertTrue(consoleOutput.contains("quit"), "Output should contain 'quit'");
     }
 
+    @Test
+    void testListBooksPrintsExampleBooks() {
+        // Arrange
+        var out = prepareStreams("listBooks\nquit\n");
+
+        // Act
+        LibraryAppMain.main(new String[]{});
+
+        // Assert
+        var output = out.toString();
+        System.err.println(output);
+        assertTrue(output.contains("Java ist auch eine Insel"),
+                "Output should contain the title of the first book");
+        assertTrue(output.contains("Grundkurs Java"), "Output should contain the title of the second book");
+    }
+
     private ByteArrayOutputStream prepareStreams(String input) {
         var in = new ByteArrayInputStream(input.getBytes());
         var out = new ByteArrayOutputStream();
