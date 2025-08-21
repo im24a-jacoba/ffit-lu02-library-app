@@ -58,10 +58,8 @@ class LibraryAppMainTest {
 
         // Assert
         var output = out.toString();
-        System.err.println(output);
-        assertTrue(output.contains("Java ist auch eine Insel"),
-                "Output should contain the title of the first book");
-        assertTrue(output.contains("Grundkurs Java"), "Output should contain the title of the second book");
+        assertTrue(output.contains("Effective Java"), "Output should contain the title of the first book");
+        assertTrue(output.contains("Head First Java"), "Output should contain the title of the second book");
     }
 
     private ByteArrayOutputStream prepareStreams(String input) {

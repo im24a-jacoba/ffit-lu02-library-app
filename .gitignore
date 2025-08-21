@@ -34,3 +34,6 @@ gradle-app.log
 # === OS-specific ===
 .DS_Store
 Thumbs.db
+
+# === Other ===
+config.properties
