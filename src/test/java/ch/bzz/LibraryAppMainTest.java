@@ -68,12 +68,40 @@ class LibraryAppMainTest {
     }
 
     @Test
+    void testListBooksWithLimitOnePrintsOnlyOneBook() {
+        // Arrange
+        var out = prepareStreams("listBooks 1\nquit\n");
+
+        // Act
+        LibraryAppMain.main(new String[]{});
+
+        // Assert
+        var output = out.toString();
+        assertTrue(output.contains("Effective Java"), "Output should contain the title of the first book");
+        assertFalse(output.contains("Head First Java"), "Output should not contain the title of the second book");
+    }
+
+    @Test
+    void testListBooksWithInvalidNumberDoesNotThrow() {
+        // Arrange
+        var out = prepareStreams("listBooks SEVEN\nquit\n");
+
+        // Act + Assert
+        assertDoesNotThrow(() -> LibraryAppMain.main(new String[]{}),
+                "Invalid numeric input should not throw an exception");
+
+        var output = out.toString();
+        assertFalse(output.isEmpty(), "Output should indicate that the argument could not be parsed");
+    }
+
+
+    @Test
     void testImportBooksImportsFromCsv() throws URISyntaxException {
         // Arrange
         var resourceUrl = getClass().getClassLoader().getResource("test_books_import.tsv");
         assertNotNull(resourceUrl, "Test resource file should exist");
         Path filePath = Paths.get(resourceUrl.toURI());
-        var out = prepareStreams("importBooks " + filePath + "\nlistBooks\nquit\n");
+        var out = prepareStreams("importBooks " + filePath + "\nlistBooks 4\nquit\n");
 
         // Act
         LibraryAppMain.main(new String[]{});
@@ -81,9 +109,26 @@ class LibraryAppMainTest {
         // Assert
         String output = out.toString();
 
-        assertTrue(output.contains("Domain-Driven Design"), "Output should contain imported book title");
-        assertTrue(output.contains("Refactoring"), "Output should contain imported book title");
-        assertTrue(output.contains("Clean Architecture"), "Output should contain imported book title");
+        assertTrue(output.contains("Domain-Driven Design"), "Output should contain imported book title with id=3");
+        assertTrue(output.contains("Refactoring"), "Output should contain imported book title with id=4");
+        assertFalse(output.contains("Clean Architecture"), "Output should not contain imported book title with id=4");
+    }
+
+
+    @Test
+    void testImportBooksWithInvalidFileDoesNotThrow() throws URISyntaxException {
+        // Arrange
+        String filePath = "NONEXISTING.tsv";
+        var resourceUrl = getClass().getClassLoader().getResource(filePath);
+        assertNull(resourceUrl, "Test resource file should not exist");
+        var out = prepareStreams("importBooks " + filePath + "\nquit\n");
+
+        // Act + Assert
+        assertDoesNotThrow(() -> LibraryAppMain.main(new String[]{}),
+                "Invalid file path should not throw an exception");
+
+        var output = out.toString();
+        assertFalse(output.isEmpty(), "Output should indicate that the file could not be found");
     }
 
 
