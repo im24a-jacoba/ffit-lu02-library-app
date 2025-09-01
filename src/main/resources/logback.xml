@@ -21,6 +21,10 @@
         </encoder>
     </appender>
 
+    <logger name="ch.bzz" level="DEBUG"/>
+    <logger name="com.zaxxer.hikari" level="WARN"/>
+    <logger name="org.hibernate" level="WARN"/>
+
     <root level="DEBUG">
         <appender-ref ref="FILE"/>
         <appender-ref ref="STDERR"/>
