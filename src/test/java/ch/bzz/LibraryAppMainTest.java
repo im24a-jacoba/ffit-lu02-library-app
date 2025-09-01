@@ -1,5 +1,10 @@
 package ch.bzz;
 
+import ch.bzz.model.Book;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -12,6 +17,18 @@ import java.nio.file.Paths;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LibraryAppMainTest {
+
+    @BeforeAll
+    static void insertTestData() {
+        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("localPU", Config.getProperties());
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        em.merge(new Book(1, "978-0134685991", "Effective Java", "Joshua Bloch", 2018));
+        em.merge(new Book(2, "978-0596009205", "Head First Java", "Kathy Sierra, Bert Bates", 2005));
+        em.getTransaction().commit();
+        em.close();
+    }
+
 
     @Test
     void testQuitEndsProgramWithoutError() {

@@ -36,17 +36,11 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Initialize database schema & test data
-        working-directory: database
-        run: |
-          psql postgresql://testuser:testpass@127.0.0.1:5432/testdb -f schema.sql
-          psql postgresql://testuser:testpass@127.0.0.1:5432/testdb -f init_test.sql
-
       - name: Create config.properties
         run: |
-          echo "DB_URL=jdbc:postgresql://localhost:5432/testdb" > config.properties
-          echo "DB_USER=testuser" >> config.properties
-          echo "DB_PASSWORD=testpass" >> config.properties
+          echo "jakarta.persistence.jdbc.url=jdbc:postgresql://localhost:5432/testdb" > config.properties
+          echo "jakarta.persistence.jdbc.user=testuser" >> config.properties
+          echo "jakarta.persistence.jdbc.password=testpass" >> config.properties
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
