@@ -12,6 +12,8 @@ repositories {
 dependencies {
     // dependencies for the application
     implementation 'org.postgresql:postgresql:42.7.3'
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'ch.qos.logback:logback-classic:1.4.11'
 
     // dependencies for testing
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
