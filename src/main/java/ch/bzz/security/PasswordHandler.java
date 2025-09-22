@@ -6,7 +6,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 /**
- * Creates salts and password hashes - and nothing else (SRP).
+ * Creates salts and password hashes and verifies them - and nothing else (SRP).
  * The plaintext password is never persisted, only the salt and the hash.
  */
 public final class PasswordHandler {
@@ -28,6 +28,17 @@ public final class PasswordHandler {
         MessageDigest md = MessageDigest.getInstance(ALGORITHM);
         md.update(salt);
         return md.digest(password.getBytes());
+    }
+
+    /**
+     * @return true if the plaintext password results in the stored hash
+     */
+    public static boolean verifyPassword(String inputPassword, byte[] storedHash, byte[] storedSalt)
+            throws NoSuchAlgorithmException {
+        byte[] hashedInput = hashPassword(inputPassword, storedSalt);
+        // isEqual instead of Arrays.equals: it always compares the full array, so the
+        // duration of the comparison does not reveal how many bytes were correct.
+        return MessageDigest.isEqual(hashedInput, storedHash);
     }
 
     public static String encode(byte[] bytes) {
