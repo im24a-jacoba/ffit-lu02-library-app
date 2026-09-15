@@ -28,3 +28,21 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+// Entry points of the application. There are two main classes, therefore one task each
+// instead of the 'application' plugin.
+
+tasks.register('runApi', JavaExec) {
+    group = 'application'
+    description = 'Starts the REST API on http://localhost:7070/books?limit=10'
+    mainClass = 'ch.bzz.JavalinMain'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+tasks.register('runConsole', JavaExec) {
+    group = 'application'
+    description = 'Starts the console application (run it with --console=plain -q)'
+    mainClass = 'ch.bzz.LibraryAppMain'
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+}
