@@ -6,23 +6,26 @@ import java.util.Scanner;
 
 
 
+import java.util.Scanner;
+
 public class LibraryAppMain {
 
-    // Enum für alle verfügbaren Befehle
-    private enum Command {
-        HELP("Zeigt diese Hilfe an"),
-        QUIT("Beendet das Programm");
+    // Die beiden vorgegebenen Bücher als Konstanten
+    private static final Book BOOK_1 = new Book(
+            1,
+            "978-3-8362-9544-4",
+            "Java ist auch eine Insel",
+            "Christian Ullenboom",
+            2023
+    );
 
-        private final String description;
-
-        Command(String description) {
-            this.description = description;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-    }
+    private static final Book BOOK_2 = new Book(
+            2,
+            "978-3-658-43573-8",
+            "Grundkurs Java",
+            "Dietmar Abts",
+            2024
+    );
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -36,27 +39,29 @@ public class LibraryAppMain {
                 continue;
             }
 
-            try {
-                // String-Eingabe case-insensitive zu Enum auflösen
-                Command cmd = Command.valueOf(input.toUpperCase());
-
-                switch (cmd) {
-                    case QUIT -> {
-                        System.out.println("Programm wird beendet.");
-                        running = false;
-                    }
-                    case HELP -> {
-                        System.out.println("Verfügbare Befehle:");
-                        for (Command c : Command.values()) {
-                            System.out.println("- " + c.name().toLowerCase() + ": " + c.getDescription());
-                        }
-                    }
+            switch (input) {
+                case "listBooks" -> {
+                    // Gibt mindestens den Titel pro Buch auf einer eigenen Zeile aus
+                    System.out.println(BOOK_1.getTitle());
+                    System.out.println(BOOK_2.getTitle());
+                    // Alternativ mit vollständigen Infos:
+                    // System.out.println(BOOK_1);
+                    // System.out.println(BOOK_2);
                 }
-            } catch (IllegalArgumentException e) {
-                System.out.println("Befehl '" + input + "' nicht erkannt. Geben Sie 'help' ein für eine Übersicht.");
+                case "help" -> {
+                    System.out.println("Verfügbare Befehle: help, listBooks, quit");
+                }
+                case "quit" -> {
+                    System.out.println("Programm wird beendet.");
+                    running = false;
+                }
+                default -> {
+                    System.out.println("Befehl '" + input + "' nicht erkannt.");
+                }
             }
         }
 
         scanner.close();
     }
 }
+
