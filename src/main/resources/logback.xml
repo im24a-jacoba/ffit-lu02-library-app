@@ -24,6 +24,9 @@
     <logger name="ch.bzz" level="DEBUG"/>
     <logger name="com.zaxxer.hikari" level="WARN"/>
     <logger name="org.hibernate" level="WARN"/>
+    <!-- Without these the embedded web server floods the log with internal DEBUG messages. -->
+    <logger name="io.javalin" level="INFO"/>
+    <logger name="org.eclipse.jetty" level="WARN"/>
 
     <root level="DEBUG">
         <appender-ref ref="FILE"/>
