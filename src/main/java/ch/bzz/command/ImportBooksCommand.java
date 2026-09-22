@@ -55,8 +55,9 @@ public class ImportBooksCommand implements Command {
             bookPersistor.saveAll(books);
             System.out.println(books.size() + " Buecher aus '" + filePath + "' importiert.");
         } catch (IOException e) {
-            // The application must keep running even if the file does not exist.
-            log.error("Could not read the import file {}", filePath, e);
+            // Tolerable situation: the application keeps running, so WARN and not ERROR.
+            // That also keeps the stacktrace out of the console, which is the user interface here.
+            log.warn("Could not read the import file {}", filePath, e);
             System.out.println("Die Datei '" + filePath + "' konnte nicht gelesen werden.");
         }
 
