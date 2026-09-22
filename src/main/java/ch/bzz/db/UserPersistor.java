@@ -1,52 +1,41 @@
 package ch.bzz.db;
 
 import ch.bzz.model.User;
-import jakarta.persistence.EntityManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Database access for {@link User} objects - and nothing else (SRP).
+ * Only the lookup by email is specific to users, everything else is inherited.
  */
-public class UserPersistor {
+public class UserPersistor extends AbstractPersistor<User> {
 
-    private static final Logger log = LoggerFactory.getLogger(UserPersistor.class);
-
-    /**
-     * Saves a user. An entry with an already existing id is overwritten.
-     *
-     * @return true if the user could be stored
-     */
-    public boolean save(User user) {
-        try (EntityManager em = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
-            try {
-                em.getTransaction().begin();
-                em.merge(user);
-                em.getTransaction().commit();
-                log.info("Saved user {}", user.getEmail());
-                return true;
-            } catch (RuntimeException e) {
-                if (em.getTransaction().isActive()) {
-                    em.getTransaction().rollback();
-                }
-                log.error("Error during saving of the user {} to the database", user.getEmail(), e);
-                return false;
-            }
-        }
+    public UserPersistor() {
+        super(User.class);
     }
 
     /**
-     * @return all users, ordered by id
+     * @return the user with this email address, or null if there is none
      */
-    public List<User> getAll() {
-        try (EntityManager em = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
-            return em.createQuery("SELECT u FROM User u ORDER BY id", User.class).getResultList();
+    public User findByEmail(String email) {
+        return query(em -> em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+                .setParameter("email", email)
+                .getResultStream()
+                .findFirst()
+                .orElse(null), null);
+    }
+
+    /**
+     * Saves a user without letting a failure (e.g. a duplicate email) reach the caller.
+     *
+     * @return true if the user could be stored
+     */
+    public boolean trySave(User user) {
+        try {
+            save(user);
+            log.info("Saved user {}", user.getEmail());
+            return true;
         } catch (RuntimeException e) {
-            log.error("Error while reading the users from the database", e);
-            return Collections.emptyList();
+            // already logged in executeTransaction, the caller only needs the result
+            return false;
         }
     }
 }

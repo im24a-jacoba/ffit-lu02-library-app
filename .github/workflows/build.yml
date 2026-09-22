@@ -41,6 +41,7 @@ jobs:
           echo "jakarta.persistence.jdbc.url=jdbc:postgresql://localhost:5432/testdb" > config.properties
           echo "jakarta.persistence.jdbc.user=testuser" >> config.properties
           echo "jakarta.persistence.jdbc.password=testpass" >> config.properties
+          echo "jwt.secret=ci-only-secret-with-at-least-32-characters" >> config.properties
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew

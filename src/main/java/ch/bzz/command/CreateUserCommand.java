@@ -69,7 +69,7 @@ public class CreateUserCommand implements Command {
             return true;
         }
 
-        if (userPersistor.save(user)) {
+        if (userPersistor.trySave(user)) {
             System.out.println("Benutzer '" + user.getEmail() + "' wurde angelegt.");
         } else {
             System.out.println("Der Benutzer '" + user.getEmail() + "' konnte nicht gespeichert werden.");
