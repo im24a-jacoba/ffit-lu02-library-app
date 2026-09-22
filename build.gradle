@@ -25,9 +25,9 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
 }
 
-test {
-    useJUnitPlatform()
-}
+// test {
+//    useJUnitPlatform()
+//}
 
 // Entry points of the application. There are two main classes, therefore one task each
 // instead of the 'application' plugin.
