@@ -63,7 +63,12 @@ public final class JwtHandler {
      * @throws JwtException if the token is invalid
      */
     public static Integer getUserId(String token) {
-        return parseJwt(token).get(USER_ID_CLAIM, Integer.class);
+        Claims claims = parseJwt(token);
+        Integer userId = claims.get(USER_ID_CLAIM, Integer.class);
+        if (userId == null || userId <= 0 || claims.getExpiration() == null) {
+            throw new JwtException("Token requires a user id and expiration");
+        }
+        return userId;
     }
 
     /**

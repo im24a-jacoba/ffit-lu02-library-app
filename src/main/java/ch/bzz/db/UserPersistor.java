@@ -20,7 +20,7 @@ public class UserPersistor extends AbstractPersistor<User> {
                 .setParameter("email", email)
                 .getResultStream()
                 .findFirst()
-                .orElse(null), null);
+                .orElse(null));
     }
 
     /**

@@ -4,7 +4,6 @@ import jakarta.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -65,27 +64,27 @@ public abstract class AbstractPersistor<T> implements AutoCloseable {
                 typedQuery.setMaxResults(limit);
             }
             return typedQuery.getResultList();
-        }, Collections.emptyList());
+        });
     }
 
     /**
      * @return the entity with this id, or null if there is none
      */
     public T findById(Object id) {
-        return query(em -> em.find(entityClass, id), null);
+        return query(em -> em.find(entityClass, id));
     }
 
     /**
      * Runs a read-only action and returns its result.
      *
-     * @param fallback returned if the database cannot be reached
+     * Database failures propagate so callers do not mistake outages for empty results.
      */
-    protected <R> R query(Function<EntityManager, R> action, R fallback) {
+    protected <R> R query(Function<EntityManager, R> action) {
         try (EntityManager em = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
             return action.apply(em);
         } catch (RuntimeException e) {
             log.error("Error while reading {} from the database", entityClass.getSimpleName(), e);
-            return fallback;
+            throw e;
         }
     }
 
@@ -110,12 +109,11 @@ public abstract class AbstractPersistor<T> implements AutoCloseable {
     }
 
     /**
-     * Closes the shared EntityManagerFactory, so a persistor can be used in a
-     * try-with-resources block. {@link PersistenceManager} creates a new factory
-     * on the next access, therefore closing one persistor does not break the others.
+     * Each operation already closes its EntityManager. The shared factory belongs
+     * to PersistenceManager and must not be closed while other persistors use it.
      */
     @Override
     public void close() {
-        PersistenceManager.close();
+        // No per-instance resources; the application owns the shared factory.
     }
 }

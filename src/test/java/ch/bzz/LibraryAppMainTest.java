@@ -28,25 +28,31 @@ class LibraryAppMainTest {
 
     private static EntityManagerFactory emf;
 
-    @BeforeAll
-    static void insertTestData() {
-        emf = Persistence.createEntityManagerFactory("localPU", Config.getProperties());
+    private static TestDatabase database;
+    private final InputStream originalIn = System.in;
+    private final PrintStream originalOut = System.out;
 
-        try (var em = emf.createEntityManager()) {
-            em.getTransaction().begin();
-            em.merge(new Book(1, "978-0134685991", "Effective Java", "Joshua Bloch", 2018));
-            em.merge(new Book(2, "978-0596009205", "Head First Java", "Kathy Sierra, Bert Bates", 2005));
-            em.getTransaction().commit();
-        }
+    @BeforeAll
+    static void startDatabase() throws Exception {
+        database = new TestDatabase();
+        emf = ch.bzz.db.PersistenceManager.getEntityManagerFactory();
+    }
+
+    @org.junit.jupiter.api.BeforeEach
+    void resetData() throws Exception {
+        database.reset();
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    void restoreStreams() {
+        System.setIn(originalIn);
+        System.setOut(originalOut);
     }
 
     @AfterAll
-    static void tearDown() {
-        if (emf != null) {
-            emf.close();
-        }
+    static void tearDown() throws Exception {
+        database.close();
     }
-
     @Test
     void testQuitEndsProgramWithoutError() {
         // Arrange
@@ -204,5 +210,15 @@ class LibraryAppMainTest {
         System.setOut(new PrintStream(out));
 
         return out;
+    }
+
+    @Test
+    void repeatedImportUpdatesBooksWithoutDuplicates() throws Exception {
+        var file = Paths.get(getClass().getClassLoader().getResource("test_books_import.tsv").toURI());
+        prepareStreams("importBooks " + file + "\nimportBooks " + file + "\nquit\n");
+        LibraryAppMain.main(new String[]{});
+        var books = new ch.bzz.db.BookPersistor();
+        assertEquals(5, books.getAll().size());
+        assertEquals("Domain-Driven Design", books.findById(3).getTitle());
     }
 }

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Leseraum · Deine Bibliothek</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="/" aria-label="Leseraum Startseite"><span class="brand-icon">L</span> Leseraum<span class="brand-sub">BIBLIOTHEK</span></a><span class="top-note">Ein guter Ort für das nächste Buch.</span></header>
+  <main>
+    <section class="intro"><div><p class="eyebrow">DEIN DIGITALER BÜCHERKATALOG</p><h1>Neue Seiten.<br>Neue Perspektiven.</h1><p class="intro-text">Entdecke die Bücher unserer Bibliothek.<br>Einfach stöbern, suchen und fündig werden.</p></div><div class="book-art" aria-hidden="true"><div class="spine one">GESCHICHTEN</div><div class="spine two">WISSEN</div><div class="spine three">PERSPEKTIVEN</div><div class="art-caption">Für neugierige Köpfe.</div></div></section>
+    <div class="workspace">
+      <section class="catalog" aria-labelledby="catalog-title">
+        <div class="section-title"><h2 id="catalog-title">Im Regal</h2><span id="count" class="pill">Wird geladen …</span></div>
+        <div class="search-row"><label class="search"><span class="sr-only">Titel, Autor oder ISBN suchen</span><input type="search" id="search" placeholder="Titel, Autor oder ISBN suchen …"></label><button id="refresh" class="secondary" type="button">Neu laden</button></div>
+        <p id="catalog-status" role="status" class="status"></p>
+        <div id="books" class="books" aria-live="polite"></div>
+        <div class="pagination"><button id="previous" class="secondary" type="button">← Zurück</button><span id="page"></span><button id="next" class="secondary" type="button">Weiter →</button></div>
+      </section>
+      <aside class="account" aria-labelledby="account-title"><p class="eyebrow">DEIN KONTO</p><h2 id="account-title">Willkommen zurück.</h2><p class="muted" id="account-description">Melde dich an, um dein Passwort zu verwalten.</p>
+        <form id="login-form"><label>E-Mail<input name="email" type="email" autocomplete="username" required placeholder="name@beispiel.ch"></label><label>Passwort<input name="password" type="password" autocomplete="current-password" required></label><button type="submit" class="primary">Anmelden <span>→</span></button></form>
+        <div id="signed-in" hidden><p id="identity" class="identity"></p><form id="password-form"><label>Aktuelles Passwort<input name="oldPassword" type="password" autocomplete="current-password" required></label><label>Neues Passwort<input name="newPassword" type="password" autocomplete="new-password" required></label><label>Neues Passwort wiederholen<input name="confirmPassword" type="password" autocomplete="new-password" required></label><button class="primary" type="submit">Passwort ändern</button></form><button type="button" class="secondary logout" id="logout">Abmelden</button></div>
+        <p id="auth-status" role="status" class="status"></p><div class="account-note">Zum Stöbern brauchst du kein Konto.<br>Neue Konten legt die Bibliotheksverwaltung an.</div>
+      </aside>
+    </div>
+  </main>
+  <footer><span>Leseraum</span><span>Deine Bibliothek. Eine Seite weiter.</span></footer>
+</body>
+</html>

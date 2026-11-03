@@ -1,0 +1,208 @@
+{
+  "item": [
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "1 Books",
+      "request": {
+        "url": "{{baseUrl}}/books?limit=10",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ]
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "if (pm.response.code === 200) pm.collectionVariables.set(\"token\", pm.response.json().token);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "2 Login",
+      "request": {
+        "url": "{{baseUrl}}/auth/login",
+        "body": {
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          },
+          "mode": "raw",
+          "raw": "{\"email\":\"{{email}}\",\"password\":\"{{password}}\"}"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ]
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "3 Change password",
+      "request": {
+        "url": "{{baseUrl}}/auth/change-password",
+        "body": {
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          },
+          "mode": "raw",
+          "raw": "{\"oldPassword\":\"{{password}}\",\"newPassword\":\"{{newPassword}}\"}"
+        },
+        "method": "PUT",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "type": "string",
+              "value": "{{token}}",
+              "key": "token"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ]
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "if (pm.response.code === 200) pm.collectionVariables.set(\"token\", pm.response.json().token);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "4 Login with new password",
+      "request": {
+        "url": "{{baseUrl}}/auth/login",
+        "body": {
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          },
+          "mode": "raw",
+          "raw": "{\"email\":\"{{email}}\",\"password\":\"{{newPassword}}\"}"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ]
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "5 Restore original password",
+      "request": {
+        "url": "{{baseUrl}}/auth/change-password",
+        "body": {
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          },
+          "mode": "raw",
+          "raw": "{\"oldPassword\":\"{{newPassword}}\",\"newPassword\":\"{{password}}\"}"
+        },
+        "method": "PUT",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "type": "string",
+              "value": "{{token}}",
+              "key": "token"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:7070"
+    },
+    {
+      "key": "email",
+      "value": "max.mustermann@example.com"
+    },
+    {
+      "key": "password",
+      "value": "geheim123"
+    },
+    {
+      "key": "newPassword",
+      "value": "neuesPasswort456"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "info": {
+    "name": "Library App LU02-LU06",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  }
+}

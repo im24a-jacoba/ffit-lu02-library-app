@@ -88,7 +88,7 @@ public class LibraryAppMain {
             return command.get().execute(arguments);
         } catch (RuntimeException e) {
             // A single failing command must not crash the whole application.
-            log.error("Unexpected error while executing the command '{}'", input, e);
+            log.error("Unexpected error while executing the command '{}'", name, e);
             System.out.println("Der Befehl '" + name + "' konnte nicht ausgefuehrt werden.");
             return true;
         }

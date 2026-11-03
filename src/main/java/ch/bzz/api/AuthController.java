@@ -35,8 +35,8 @@ public class AuthController {
      */
     public void login(Context ctx) {
         var json = ctx.bodyValidator(Map.class)
-                .check(m -> m.containsKey("email"), "email is required")
-                .check(m -> m.containsKey("password"), "password is required")
+                .check(m -> m.get("email") instanceof String value && !value.isBlank(), "email is required")
+                .check(m -> m.get("password") instanceof String value && !value.isBlank(), "password is required")
                 .get();
 
         String inputEmail = String.valueOf(json.get("email"));
@@ -72,8 +72,8 @@ public class AuthController {
         }
 
         var json = ctx.bodyValidator(Map.class)
-                .check(m -> m.containsKey("oldPassword"), "oldPassword is required")
-                .check(m -> m.containsKey("newPassword"), "newPassword is required")
+                .check(m -> m.get("oldPassword") instanceof String value && !value.isBlank(), "oldPassword is required")
+                .check(m -> m.get("newPassword") instanceof String value && !value.isBlank(), "newPassword is required")
                 .get();
 
         String oldPassword = String.valueOf(json.get("oldPassword"));

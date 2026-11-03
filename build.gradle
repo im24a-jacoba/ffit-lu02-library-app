@@ -31,6 +31,13 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    systemProperty 'jwt.secret', 'automated-tests-only-secret-at-least-32-characters'
+    maxParallelForks = 1
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 22
 }
 
 // Entry points of the application. There are two main classes, therefore one task each

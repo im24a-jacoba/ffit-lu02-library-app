@@ -29,11 +29,17 @@ public final class Config {
     public static Properties getProperties() {
         Properties copy = new Properties();
         copy.putAll(PROPERTIES);
+        System.getProperties().forEach((key, value) -> {
+            String name = key.toString();
+            if (name.startsWith("jakarta.persistence.") || name.startsWith("hibernate.")) {
+                copy.put(key, value);
+            }
+        });
         return copy;
     }
 
     public static String get(String key) {
-        return PROPERTIES.getProperty(key);
+        return System.getProperty(key, PROPERTIES.getProperty(key));
     }
 
     private static Properties load() {

@@ -4,6 +4,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Creates salts and password hashes and verifies them - and nothing else (SRP).
@@ -27,7 +28,7 @@ public final class PasswordHandler {
     public static byte[] hashPassword(String password, byte[] salt) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance(ALGORITHM);
         md.update(salt);
-        return md.digest(password.getBytes());
+        return md.digest(password.getBytes(StandardCharsets.UTF_8));
     }
 
     /**

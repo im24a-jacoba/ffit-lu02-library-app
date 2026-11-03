@@ -25,16 +25,25 @@ public class JavalinMain {
     private static final int PORT = 7070;
 
     public static void main(String[] args) {
+        Javalin app = createApp().start(PORT);
+        Runtime.getRuntime().addShutdownHook(new Thread(app::stop));
+        log.info("REST API started on port {}", PORT);
+    }
+
+    public static Javalin createApp() {
         BookController bookController = new BookController(new BookPersistor());
         AuthController authController = new AuthController(new UserPersistor());
 
-        Javalin app = Javalin.create();
+        Javalin app = Javalin.create(config -> config.staticFiles.add("/public"));
 
         app.get("/books", bookController::getBooks);
         app.post("/auth/login", authController::login);
         app.put("/auth/change-password", authController::changePassword);
 
-        app.start(PORT);
-        log.info("REST API started on port {}", PORT);
+        app.exception(jakarta.persistence.PersistenceException.class, (exception, ctx) -> {
+            log.error("Database request failed", exception);
+            ctx.status(503).json(java.util.Map.of("error", "Database unavailable"));
+        });
+        return app;
     }
 }
